@@ -55,7 +55,6 @@ app.whenReady().then(() => {
     {
       label: '退出',
       click: () => {
-        // BrowserWindow.getAllWindows().forEach(window => window.close())
         tray.destroy()
         if (process.platform !== 'darwin') {
           app.quit()
