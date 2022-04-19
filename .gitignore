@@ -2,6 +2,7 @@ dist
 build
 node_modules
 .idea
+.vscode
 .quasar
 .DS_Store
 *.zip
