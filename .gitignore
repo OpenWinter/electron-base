@@ -1,0 +1,7 @@
+dist
+build
+node_modules
+.idea
+.quasar
+.DS_Store
+*.zip
