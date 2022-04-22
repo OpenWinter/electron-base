@@ -87,6 +87,7 @@
 <div class="wrap">
   <div class="menu-wrap">
     <button onclick="openDialog()">弹窗</button>
+    <button onclick="openWindow()">新窗口</button>
     <button onclick="openConfirm()">提示</button>
     <button onclick="sendMessage()">消息</button>
     <button onclick="openLoading()">加载</button>
@@ -116,6 +117,21 @@
       console.log('hi')
     })
   }
+  function openWindow(){
+   window.electronAPI.openWindow({
+     name: 'about',
+     title: '关于我们',
+     readyToShow: true,
+     page: '/pages/about.html',
+     preload: 'about.js',
+     width: 360,
+     height: 500,
+     minimizable: false,
+     maximizable: false,
+     resizable: false
+   })
+  }
+
   function openDialog(){
     window.electronAPI.$dialog({
       page: '/pages/agreement.html',
