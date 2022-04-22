@@ -1,8 +1,9 @@
 const {app, BrowserWindow, ipcMain, Tray, Menu} = require('electron')
-const path = require('path')
+const {join} = require('path')
 const {name} = require('../package.json')
+const createWindow = require('./utils/createWindow')
+
 let mainWin
-let tray
 
 function init() {
   mainWin = new BrowserWindow({
@@ -12,11 +13,11 @@ function init() {
     minWidth: 800,
     minHeight: 500,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: join(__dirname, 'preload.js')
     },
-    icon: path.join(__dirname, '../public/favicon.ico')
+    icon: join(__dirname, '../public/favicon.ico')
   })
-  mainWin.loadFile(path.join(__dirname, '../public/index.html'))
+  mainWin.loadFile(join(__dirname, '../public/index.html'))
   // 关闭时触发
   mainWin.on('close', (event) => {
     // 截获 close 默认行为
@@ -30,7 +31,7 @@ function init() {
 app.whenReady().then(() => {
   init()
   // 新建托盘
-  tray = new Tray(path.join(__dirname, '../public/favicon.ico'))
+  const tray = new Tray(join(__dirname, '../public/favicon.ico'))
   // 托盘名称
   tray.setToolTip(name)
   // 托盘菜单
@@ -43,7 +44,9 @@ app.whenReady().then(() => {
       label: '关于我们',
       click: () => createWindow('', {
         name: 'about',
-        page: '/about.html',
+        title: '关于我们',
+        readyToShow: true,
+        page: '/pages/about.html',
         preload: 'about.js',
         width: 360,
         height: 500,
@@ -70,9 +73,9 @@ app.whenReady().then(() => {
     mainWin.isVisible() ? mainWin.hide() : mainWin.show()
     mainWin.isVisible() ? mainWin.setSkipTaskbar(false) : mainWin.setSkipTaskbar(true)
   })
-  /*if (process.env.NODE_ENV === 'development') {
+  if (!app.isPackaged) {
     mainWin.webContents.openDevTools({mode: 'right'})
-  }*/
+  }
 })
 
 app.on('activate', () => {
@@ -87,64 +90,12 @@ app.on('window-all-closed', () => {
   }
 })
 
-function createWindow(event, data) {
-  const {
-    name,
-    page,
-    preload,
-    width = 650,
-    minWidth,
-    height = 600,
-    minHeight,
-    maxWidth,
-    maxHeight,
-    x,
-    y,
-    resizable = true,
-    minimizable = true,
-    maximizable = true,
-    closable = true,
-    autoHideMenuBar = true,
-    frame = true,
-    parent,
-    model = false,
-  } = data
-  const current = BrowserWindow.getAllWindows().find(item => item._name === name);
-  if (current) {
-    current.show()
-  } else {
-    const option = {
-      width,
-      minWidth,
-      height,
-      minHeight,
-      x,
-      y,
-      frame,
-      resizable,
-      minimizable,
-      maximizable,
-      closable,
-      autoHideMenuBar,
-      center: true,
-      parent,
-      model,
-      icon: path.join(__dirname, '../public/favicon.ico'),
-    }
-    if (preload) {
-      const preloadPath = /\.js$/.test(preload) ? preload : preload + '.js'
-      option.webPreferences = {
-        preload: path.join(__dirname, preloadPath),
-      }
-    }
-    maxWidth ? option.maxWidth = maxWidth : null
-    maxHeight ? option.maxHeight = maxHeight : null
-    let window = new BrowserWindow(option)
-    //给window添加一个唯一标记
-    window._name = name
-    const pagePath = /\.html$/.test(page) ? page : page + '.html'
-    window.loadFile(path.join(__dirname, `../public/pages/${pagePath}`))
-  }
-}
+ipcMain.on('createWindow', createWindow)
 
-ipcMain.on("createWindow", createWindow)
+const {createConfirm,onConfirm} = require('./utils/confirmUtil')
+ipcMain.handle('createConfirm', createConfirm)
+ipcMain.handle('onConfirm', onConfirm)
+
+const {createDialog,onDialogConfirm} = require('./utils/dialogUtil')
+ipcMain.handle('createDialog', createDialog)
+ipcMain.handle('onDialogConfirm', onDialogConfirm)

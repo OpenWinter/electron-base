@@ -23,6 +23,11 @@
       position: relative;
       height: 100%;
     }
+
+    .menu-wrap{
+      position: relative;
+      z-index: 100;
+    }
     .word{
       color: white;
       font-size: 72px;
@@ -75,10 +80,17 @@
       left: 50%;
     }
   </style>
+  <link rel="stylesheet" href="./css/common.css">
 </head>
 
 <body>
 <div class="wrap">
+  <div class="menu-wrap">
+    <button onclick="openDialog()">弹窗</button>
+    <button onclick="openConfirm()">提示</button>
+    <button onclick="sendMessage()">消息</button>
+    <button onclick="openLoading()">加载</button>
+  </div>
   <div class="js-webgl-globe-data">
     <div class="js-webgl-globe"></div>
   </div>
@@ -91,5 +103,42 @@
 </div>
 <!--<img class="back-img" src="./images/hero-glow.svg" alt=""/>-->
 <script crossorigin="anonymous" defer="defer" src="./index.js"></script>
+<script>
+  function openConfirm(){
+    window.electronAPI.$confirm({
+      title: '系统提示',
+      message: '此操作将永久删除该文件, 是否继续?',
+      cancelText: '取消',
+      confirmText: '确认'
+    }).then(r => {
+      console.log(r)
+    }).catch(e => {
+      console.log('hi')
+    })
+  }
+  function openDialog(){
+    window.electronAPI.$dialog({
+      page: '/pages/agreement.html',
+      preload: 'dialog.js',
+      cancelBtn: false
+    }).then(r => {
+      console.log(r)
+    })
+  }
+
+  function sendMessage(){
+    window.electronAPI.$message('message')
+  }
+
+  let loading = false
+  function openLoading(){
+    loading ? window.electronAPI.$loading.close() : window.electronAPI.$loading.open()
+    loading = !loading
+  }
+
+  window.addEventListener('message',msg => {
+    console.log(msg)
+  })
+</script>
 </body>
 </html>

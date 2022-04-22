@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <style>
+    body{
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+    [v-cloak] {
+      display: none;
+    }
+
+    .content-wrap {
+      font-size: 18px;
+      padding: 30px 15px 10px;
+    }
+
+    .btn-wrap {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 15px;
+      text-align: right;
+    }
+    button{
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 8px 20px;
+    }
+    #cancel{
+      background-color: #F56C6C;
+      margin-right: 10px;
+    }
+    #confirm{
+      background-color: #409eff;
+    }
+  </style>
+</head>
+<body>
+<div>
+  <div class="content-wrap">
+    <span id="message"></span>
+  </div>
+  <div class="btn-wrap">
+    <button id="cancel" onclick="cancel()">取消</button>
+    <button id="confirm" onclick="confirm()">确认</button>
+  </div>
+</div>
+</body>
+<script src="../js/qs.min.js"></script>
+<script>
+  const href = location.href
+  const index = href.indexOf('?')
+  if (index !== -1) {
+    const p = href.substring(index + 1)
+    const {message,confirmText = '确认',cancelText = '取消',cancelBtn,confirmBtn} = Qs.parse(p)
+    const cancel = document.getElementById('cancel')
+    const confirm = document.getElementById('confirm')
+    const msg = document.getElementById('message')
+    msg.textContent = message
+    if(cancelBtn && cancelBtn === 'false'){
+      cancel.style.display = 'none'
+    }else{
+      cancel.textContent = cancelText
+    }
+    if(confirmBtn && confirmBtn === 'false'){
+      confirm.style.display = 'none'
+    }else{
+      confirm.textContent = confirmText
+    }
+  }
+  function cancel(){
+    window.electronAPI.onConfirm({
+      action: 'cancel'
+    })
+    window.close()
+  }
+  function confirm(){
+    window.electronAPI.onConfirm({
+      action: 'confirm'
+    })
+    window.close()
+  }
+</script>
+</html>
