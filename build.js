@@ -15,6 +15,7 @@ async function check() {
       return true
     }
   }
+  return false
 }
 
 async function build() {
@@ -30,8 +31,8 @@ async function build() {
     `--out=${join(out)}`,
     `--platform=${platform}`,
     `--arch=${arch}`,
-    `--electron-version ${version}`,
     '--overwrite',
+    `--electron-version ${version}`,
     `--electron-zip-dir=${join(source)}`,//手动指定electron打包基础文件的位置
     `--icon=${join(icon)}`,
     ..._ignore
