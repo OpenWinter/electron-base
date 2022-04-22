@@ -10,20 +10,17 @@ electron-base是一个electron的基础开发框架，本项目主要在页面�
 ### 开发
 ```
 # 克隆项目
-git clone https://github.com/PanJiaChen/vue-element-admin.git
-
-# 进入项目目录
-cd vue-element-admin
+git clone https://github.com/OpenWinter/electron-base.git
 
 # 安装依赖
 npm install
 
-# 没有外网环境的请通过设置淘宝镜像解决下载问题，第一次安装可能会失败，请删除node_module目录后重试
+# 没有外网环境的请通过设置淘宝镜像解决下载问题，安装可能会失败，请删除node_module目录后重试几次
 npm config set registry https://registry.npm.taobao.org
 # 查看是否更改成功
 npm config get registry
 
-# 启动服务
+# 启动服务，启动失败多数情况是因为electron包下载失败或者下载不完全，请删除node_module目录后重新安装
 npm run dev
 
 #快发环境打开控制台调试
